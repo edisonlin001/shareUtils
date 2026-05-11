@@ -35,7 +35,6 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
-        /* 欢迎页面样式 */
         .welcome-card {
             width: 100%;
             max-width: 420px;
@@ -61,12 +60,10 @@
             line-height: 1.6;
         }
 
-        /* 资源页面样式 */
         .apple-card {
             width: 100%;
             max-width: 420px;
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             background: rgba(255, 255, 255, 0.9);
             border-radius: 28px;
             padding: 45px 35px;
@@ -74,7 +71,7 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
             margin-bottom: 30px;
             border: 1px solid rgba(255, 255, 255, 0.5);
-            display: none; /* 默认隐藏 */
+            display: none;
         }
 
         .resource-title {
@@ -82,7 +79,6 @@
             font-weight: 600;
             color: #1d1d1f;
             margin-bottom: 16px;
-            letter-spacing: 0.5px;
         }
 
         .resource-desc {
@@ -99,7 +95,7 @@
         }
 
         .apple-btn {
-            display: inline-block;
+            display: none;
             width: 100%;
             padding: 18px 0;
             color: #fff;
@@ -114,20 +110,10 @@
             background: #25C673;
             box-shadow: 0 4px 15px rgba(37, 198, 115, 0.3);
         }
-        .btn-quark:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(37, 198, 115, 0.4);
-            background: #1fb667;
-        }
 
         .btn-baidu {
             background: #1677ff;
             box-shadow: 0 4px 15px rgba(22, 119, 255, 0.3);
-        }
-        .btn-baidu:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(22, 119, 255, 0.4);
-            background: #0066dd;
         }
 
         footer {
@@ -142,17 +128,14 @@
 <body>
     <div class="ad-container">顶部广告位 · 粘贴你的广告代码</div>
 
-    <!-- 欢迎页面（默认显示） -->
     <div class="welcome-card" id="welcome">
         <h1 class="welcome-title">👋 欢迎光临</h1>
         <p class="welcome-desc">这里是优质资源分享主页<br>请通过专属链接获取资源</p>
     </div>
 
-    <!-- 资源页面（默认隐藏） -->
     <div class="apple-card" id="resourceCard">
         <h2 class="resource-title" id="title">加载中...</h2>
         <p class="resource-desc" id="desc"></p>
-
         <div class="btn-group">
             <a id="quarkBtn" class="apple-btn btn-quark" target="_blank">🟢 夸克网盘获取</a>
             <a id="baiduBtn" class="apple-btn btn-baidu" target="_blank">🔵 百度网盘获取</a>
@@ -168,31 +151,59 @@
             const params = new URLSearchParams(location.search);
             const pageId = params.get('p');
 
-            // ======================
-            // 没有参数 → 显示欢迎页
-            // ======================
+            // 无参数 → 显示欢迎页
             if (!pageId) {
-                document.getElementById('welcome').style.display = 'block';
-                document.getElementById('resourceCard').style.display = 'none';
+                showWelcome();
                 return;
             }
 
-            // ======================
-            // 有参数 → 显示资源
-            // ======================
-            document.getElementById('welcome').style.display = 'none';
-            document.getElementById('resourceCard').style.display = 'block';
-
             try {
-                const res = await fetch(`/api/get?p=${pageId}`).then(r => r.json());
+                // 请求后端资源
+                const response = await fetch(`/api/get?p=${pageId}`);
+                const res = await response.json();
+
+                // ======================
+                // 关键：如果返回无效资源，直接跳回首页
+                // ======================
+                if (!res || res.valid === false) {
+                    location.replace('/'); // 跳回首页，不留历史记录
+                    return;
+                }
+
+                // 显示资源
+                showResource();
                 document.getElementById('title').innerText = '📁 ' + res.title;
                 document.getElementById('desc').innerText = res.desc;
-                document.getElementById('quarkBtn').href = res.quark;
-                document.getElementById('baiduBtn').href = res.baidu;
+
+                // 夸克链接不为空才显示
+                const quarkBtn = document.getElementById('quarkBtn');
+                if (res.quark?.trim()) {
+                    quarkBtn.href = res.quark;
+                    quarkBtn.style.display = 'block';
+                }
+
+                // 百度链接不为空才显示
+                const baiduBtn = document.getElementById('baiduBtn');
+                if (res.baidu?.trim()) {
+                    baiduBtn.href = res.baidu;
+                    baiduBtn.style.display = 'block';
+                }
+
             } catch (e) {
-                document.getElementById('title').innerText = '资源加载失败';
+                // 报错也跳回首页
+                location.replace('/');
             }
         })();
+
+        function showWelcome() {
+            document.getElementById('welcome').style.display = 'block';
+            document.getElementById('resourceCard').style.display = 'none';
+        }
+
+        function showResource() {
+            document.getElementById('welcome').style.display = 'none';
+            document.getElementById('resourceCard').style.display = 'block';
+        }
     </script>
 </body>
 </html>
