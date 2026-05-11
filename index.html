@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>资源分享</title>
+    <meta name="description" content="优质资源分享">
+    <style>
+        /* 全局重置 + 苹果风格基础 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* 苹果风渐变背景 */
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4eaf5 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 15px;
+        }
+
+        /* 广告容器 - 苹果磨砂玻璃样式 */
+        .ad-container {
+            width: 100%;
+            max-width: 420px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 22px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 核心卡片 - 苹果旗舰级样式 */
+        .apple-card {
+            width: 100%;
+            max-width: 420px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 28px;
+            padding: 45px 35px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* 资源标题 */
+        .resource-title {
+            font-size: 26px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        /* 资源描述 */
+        .resource-desc {
+            font-size: 16px;
+            color: #86868b;
+            line-height: 1.5;
+            margin-bottom: 40px;
+        }
+
+        /* 按钮组 */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 苹果风格按钮 */
+        .apple-btn {
+            display: inline-block;
+            width: 100%;
+            padding: 18px 0;
+            color: #fff;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        /* 夸克网盘按钮 */
+        .btn-quark {
+            background: #25C673;
+            box-shadow: 0 4px 15px rgba(37, 198, 115, 0.3);
+        }
+        .btn-quark:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 198, 115, 0.4);
+            background: #1fb667;
+        }
+
+        /* 百度网盘按钮 */
+        .btn-baidu {
+            background: #1677ff;
+            box-shadow: 0 4px 15px rgba(22, 119, 255, 0.3);
+        }
+        .btn-baidu:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(22, 119, 255, 0.4);
+            background: #0066dd;
+        }
+
+        /* 页脚 */
+        footer {
+            font-size: 13px;
+            color: #86868b;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 顶部广告位 -->
+    <div class="ad-container">
+        顶部广告位 · 粘贴你的广告代码
+    </div>
+
+    <!-- 核心资源卡片 -->
+    <div class="apple-card">
+        <h2 class="resource-title">📁 优质资源分享</h2>
+        <p class="resource-desc">选择网盘，一键获取资源</p>
+        
+        <div class="btn-group">
+            <!-- 夸克网盘链接（已填好） -->
+            <a href="https://pan.quark.cn/s/ba2abf643368?pwd=2bcy" class="apple-btn btn-quark" target="_blank">
+                🟢 夸克网盘获取
+            </a>
+            <!-- 百度网盘链接（已填好） -->
+            <a href="https://pan.baidu.com/s/1SttWSd9Hb_CW4yGcnGA2iw?pwd=5k4t" class="apple-btn btn-baidu" target="_blank">
+                🔵 百度网盘获取
+            </a>
+        </div>
+    </div>
+
+    <!-- 底部广告位 -->
+    <div class="ad-container">
+        底部广告位 · 粘贴你的广告代码
+    </div>
+
+    <footer>
+        © 2025 资源分享 · 仅供学习交流
+    </footer>
+</body>
+</html>
