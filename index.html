@@ -6,7 +6,6 @@
     <title>资源分享</title>
     <meta name="description" content="优质资源分享">
     <style>
-        /* 全局重置 + 苹果风格基础 */
         * {
             margin: 0;
             padding: 0;
@@ -14,7 +13,6 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
-        /* 苹果风渐变背景 */
         body {
             min-height: 100vh;
             background: linear-gradient(135deg, #f5f7fa 0%, #e4eaf5 100%);
@@ -24,7 +22,6 @@
             padding: 20px 15px;
         }
 
-        /* 广告容器 - 苹果磨砂玻璃样式 */
         .ad-container {
             width: 100%;
             max-width: 420px;
@@ -38,7 +35,33 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
-        /* 核心卡片 - 苹果旗舰级样式 */
+        /* 欢迎页面样式 */
+        .welcome-card {
+            width: 100%;
+            max-width: 420px;
+            backdrop-filter: blur(20px);
+            background: rgba(255,255,255,0.9);
+            border-radius: 28px;
+            padding: 60px 35px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 20px;
+        }
+
+        .welcome-desc {
+            font-size: 17px;
+            color: #86868b;
+            line-height: 1.6;
+        }
+
+        /* 资源页面样式 */
         .apple-card {
             width: 100%;
             max-width: 420px;
@@ -51,9 +74,9 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
             margin-bottom: 30px;
             border: 1px solid rgba(255, 255, 255, 0.5);
+            display: none; /* 默认隐藏 */
         }
 
-        /* 资源标题 */
         .resource-title {
             font-size: 26px;
             font-weight: 600;
@@ -62,7 +85,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* 资源描述 */
         .resource-desc {
             font-size: 16px;
             color: #86868b;
@@ -70,14 +92,12 @@
             margin-bottom: 40px;
         }
 
-        /* 按钮组 */
         .btn-group {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
 
-        /* 苹果风格按钮 */
         .apple-btn {
             display: inline-block;
             width: 100%;
@@ -90,7 +110,6 @@
             transition: all 0.3s ease;
         }
 
-        /* 夸克网盘按钮 */
         .btn-quark {
             background: #25C673;
             box-shadow: 0 4px 15px rgba(37, 198, 115, 0.3);
@@ -101,7 +120,6 @@
             background: #1fb667;
         }
 
-        /* 百度网盘按钮 */
         .btn-baidu {
             background: #1677ff;
             box-shadow: 0 4px 15px rgba(22, 119, 255, 0.3);
@@ -112,7 +130,6 @@
             background: #0066dd;
         }
 
-        /* 页脚 */
         footer {
             font-size: 13px;
             color: #86868b;
@@ -123,35 +140,59 @@
 </head>
 
 <body>
-    <!-- 顶部广告位 -->
-    <div class="ad-container">
-        顶部广告位 · 粘贴你的广告代码
+    <div class="ad-container">顶部广告位 · 粘贴你的广告代码</div>
+
+    <!-- 欢迎页面（默认显示） -->
+    <div class="welcome-card" id="welcome">
+        <h1 class="welcome-title">👋 欢迎光临</h1>
+        <p class="welcome-desc">这里是优质资源分享主页<br>请通过专属链接获取资源</p>
     </div>
 
-    <!-- 核心资源卡片 -->
-    <div class="apple-card">
-        <h2 class="resource-title">📁 优质资源分享</h2>
-        <p class="resource-desc">选择网盘，一键获取资源</p>
-        
+    <!-- 资源页面（默认隐藏） -->
+    <div class="apple-card" id="resourceCard">
+        <h2 class="resource-title" id="title">加载中...</h2>
+        <p class="resource-desc" id="desc"></p>
+
         <div class="btn-group">
-            <!-- 夸克网盘链接（已填好） -->
-            <a href="https://pan.quark.cn/s/ba2abf643368?pwd=2bcy" class="apple-btn btn-quark" target="_blank">
-                🟢 夸克网盘获取
-            </a>
-            <!-- 百度网盘链接（已填好） -->
-            <a href="https://pan.baidu.com/s/1SttWSd9Hb_CW4yGcnGA2iw?pwd=5k4t" class="apple-btn btn-baidu" target="_blank">
-                🔵 百度网盘获取
-            </a>
+            <a id="quarkBtn" class="apple-btn btn-quark" target="_blank">🟢 夸克网盘获取</a>
+            <a id="baiduBtn" class="apple-btn btn-baidu" target="_blank">🔵 百度网盘获取</a>
         </div>
     </div>
 
-    <!-- 底部广告位 -->
-    <div class="ad-container">
-        底部广告位 · 粘贴你的广告代码
-    </div>
+    <div class="ad-container">底部广告位 · 粘贴你的广告代码</div>
 
-    <footer>
-        © 2025 资源分享 · 仅供学习交流
-    </footer>
+    <footer>© 2025 资源分享 · 仅供学习交流</footer>
+
+    <script>
+        (async () => {
+            const params = new URLSearchParams(location.search);
+            const pageId = params.get('p');
+
+            // ======================
+            // 没有参数 → 显示欢迎页
+            // ======================
+            if (!pageId) {
+                document.getElementById('welcome').style.display = 'block';
+                document.getElementById('resourceCard').style.display = 'none';
+                return;
+            }
+
+            // ======================
+            // 有参数 → 显示资源
+            // ======================
+            document.getElementById('welcome').style.display = 'none';
+            document.getElementById('resourceCard').style.display = 'block';
+
+            try {
+                const res = await fetch(`/api/get?p=${pageId}`).then(r => r.json());
+                document.getElementById('title').innerText = '📁 ' + res.title;
+                document.getElementById('desc').innerText = res.desc;
+                document.getElementById('quarkBtn').href = res.quark;
+                document.getElementById('baiduBtn').href = res.baidu;
+            } catch (e) {
+                document.getElementById('title').innerText = '资源加载失败';
+            }
+        })();
+    </script>
 </body>
 </html>
