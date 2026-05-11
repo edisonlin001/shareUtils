@@ -22,6 +22,37 @@
             padding: 20px 15px;
         }
 
+        /* 公众号二维码模块（居中、底部广告前） */
+        .wechat-qrcode {
+            width: 100%;
+            max-width: 420px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 25px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .qrcode-img {
+            width: 130px;
+            height: 130px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+        }
+        .qrcode-desc {
+            font-size: 16px;
+            color: #1d1d1f;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .qrcode-sub {
+            font-size: 13px;
+            color: #86868b;
+        }
+
         .ad-container {
             width: 100%;
             max-width: 420px;
@@ -110,10 +141,20 @@
             background: #25C673;
             box-shadow: 0 4px 15px rgba(37, 198, 115, 0.3);
         }
+        .btn-quark:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 198, 115, 0.4);
+            background: #1fb667;
+        }
 
         .btn-baidu {
             background: #1677ff;
             box-shadow: 0 4px 15px rgba(22, 119, 255, 0.3);
+        }
+        .btn-baidu:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(22, 119, 255, 0.4);
+            background: #0066dd;
         }
 
         footer {
@@ -126,11 +167,13 @@
 </head>
 
 <body>
+    <!-- 顶部广告 -->
     <div class="ad-container">顶部广告位 · 粘贴你的广告代码</div>
 
+    <!-- 欢迎/资源卡片 -->
     <div class="welcome-card" id="welcome">
         <h1 class="welcome-title">👋 欢迎光临</h1>
-        <p class="welcome-desc">这里有很多没费资源分享<br>请通过专属链接获取资源</p>
+        <p class="welcome-desc">这里是优质资源分享主页<br>请通过专属链接获取资源</p>
     </div>
 
     <div class="apple-card" id="resourceCard">
@@ -142,6 +185,14 @@
         </div>
     </div>
 
+    <!-- 【重点】二维码：放在底部广告前面，居中 -->
+    <div class="wechat-qrcode">
+        <img src="wechat-qrcode.jpg" alt="微信公众号二维码" class="qrcode-img">
+        <div class="qrcode-desc">扫码关注公众号</div>
+        <div class="qrcode-sub">获取更多优质资源</div>
+    </div>
+
+    <!-- 底部广告（在二维码下方） -->
     <div class="ad-container">底部广告位 · 粘贴你的广告代码</div>
 
     <footer>© 2025 资源分享 · 仅供学习交流</footer>
@@ -151,38 +202,30 @@
             const params = new URLSearchParams(location.search);
             const pageId = params.get('p');
 
-            // 无参数 → 显示欢迎页
             if (!pageId) {
                 showWelcome();
                 return;
             }
 
             try {
-                // 请求后端资源
                 const response = await fetch(`/api/get?p=${pageId}`);
                 const res = await response.json();
 
-                // ======================
-                // 关键：如果返回无效资源，直接跳回首页
-                // ======================
                 if (!res || res.valid === false) {
-                    location.replace('/'); // 跳回首页，不留历史记录
+                    location.replace('/');
                     return;
                 }
 
-                // 显示资源
                 showResource();
                 document.getElementById('title').innerText = '📁 ' + res.title;
                 document.getElementById('desc').innerText = res.desc;
 
-                // 夸克链接不为空才显示
                 const quarkBtn = document.getElementById('quarkBtn');
                 if (res.quark?.trim()) {
                     quarkBtn.href = res.quark;
                     quarkBtn.style.display = 'block';
                 }
 
-                // 百度链接不为空才显示
                 const baiduBtn = document.getElementById('baiduBtn');
                 if (res.baidu?.trim()) {
                     baiduBtn.href = res.baidu;
@@ -190,7 +233,6 @@
                 }
 
             } catch (e) {
-                // 报错也跳回首页
                 location.replace('/');
             }
         })();
