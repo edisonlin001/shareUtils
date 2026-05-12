@@ -23,7 +23,77 @@
             padding: 20px 15px;
         }
 
-        /* 公众号二维码模块（居中、底部广告前） */
+        /* ==========================================
+           🔥 美化版全屏加载遮罩（纯视觉，无阻塞）
+           ========================================== */
+        .loading-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* 渐变背景 + 毛玻璃 */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 99999;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        /* 加载隐藏动画 */
+        .loading-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        /* 双环加载动画 */
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            margin-bottom: 25px;
+        }
+        .loading-spinner::before,
+        .loading-spinner::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            animation: spin 1.2s linear infinite;
+        }
+        .loading-spinner::before {
+            border-top-color: rgba(255,255,255,0.9);
+        }
+        .loading-spinner::after {
+            border-bottom-color: rgba(255,255,255,0.9);
+            animation-delay: 0.6s;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* 加载文字 */
+        .loading-text {
+            font-size: 20px;
+            color: #fff;
+            font-weight: 500;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .loading-count {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        .loading-tip {
+            font-size: 14px;
+            color: rgba(255,255,255,0.8);
+            margin-top: 10px;
+        }
+
+        /* 公众号二维码模块 */
         .wechat-qrcode {
             width: 100%;
             max-width: 420px;
@@ -77,6 +147,7 @@
             text-align: center;
             box-shadow: 0 20px 60px rgba(0,0,0,0.08);
             margin-bottom: 30px;
+            display: none;
         }
 
         .welcome-title {
@@ -168,14 +239,17 @@
 </head>
 
 <body>
-    <!-- 提醒广告 -->
-    <script>(function(s){s.dataset.zone='10994809',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-    <!-- 弹窗广告 -->
-    <!-- <script>(function(s){s.dataset.zone='10994794',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script> -->
-    <!-- 顶部广告 -->
-    <!--<div class="ad-container">顶部广告位 · 粘贴你的广告代码</div> -->
+    <!-- 🔥 高级视觉加载遮罩（仅遮挡页面，不阻塞任何代码执行） -->
+    <div class="loading-container" id="loadingContainer">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">正在初始化 <span class="loading-count" id="countdown">5</span> 秒</div>
+        <div class="loading-tip">加载中，请稍候...</div>
+    </div>
 
-    <!-- 欢迎/资源卡片 -->
+    <!-- 广告脚本 👉 立即执行，无任何阻塞 -->
+    <script>(function(s){s.dataset.zone='10994809',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
+    <!-- 页面主体内容 -->
     <div class="welcome-card" id="welcome">
         <h1 class="welcome-title">👋 欢迎光临</h1>
         <p class="welcome-desc">这里是优质资源分享主页<br>请通过专属链接获取资源</p>
@@ -190,29 +264,51 @@
         </div>
     </div>
 
-    <!-- 【重点】二维码：放在底部广告前面，居中 -->
     <div class="wechat-qrcode">
         <img src="wechat-qrcode.jpg" alt="微信公众号二维码" class="qrcode-img">
         <div class="qrcode-desc">长按或扫码关注公众号</div>
         <div class="qrcode-sub">获取更多优质资源</div>
     </div>
 
-    <!-- 底部广告（在二维码下方） -->
-    <!-- <div class="ad-container">底部广告位 · 粘贴你的广告代码</div> -->
-
     <footer>© 2026 资源分享 · 仅供学习交流</footer>
 
     <script>
-        (async () => {
-            const params = new URLSearchParams(location.search);
-            const pageId = params.get('p');
+        // ==========================================
+        // 🔥 核心逻辑：纯视觉加载，无任何阻塞
+        // 1. 广告/接口/DOM 立即执行
+        // 2. 仅遮罩显示5秒后隐藏
+        // ==========================================
+        
+        // 👇 立即执行所有业务逻辑（接口、渲染，不等待！）
+        initPageLogic();
 
-            if (!pageId) {
-                showWelcome();
-                return;
+        // 👇 仅控制视觉加载遮罩（5秒后隐藏）
+        const loadingContainer = document.getElementById('loadingContainer');
+        const countdownEl = document.getElementById('countdown');
+        let countdown = 5;
+
+        // 倒计时更新
+        const timer = setInterval(() => {
+            countdown--;
+            countdownEl.textContent = countdown;
+            if (countdown <= 0) {
+                clearInterval(timer);
+                // 淡出隐藏加载遮罩
+                loadingContainer.classList.add('hidden');
             }
+        }, 1000);
 
+        // 页面核心逻辑 - 立即执行，不延迟！
+        async function initPageLogic() {
             try {
+                const params = new URLSearchParams(location.search);
+                const pageId = params.get('p');
+
+                if (!pageId) {
+                    showWelcome();
+                    return;
+                }
+
                 const response = await fetch(`/api/get?p=${pageId}`);
                 const res = await response.json();
 
@@ -240,8 +336,9 @@
             } catch (e) {
                 location.replace('/');
             }
-        })();
+        }
 
+        // 工具函数
         function showWelcome() {
             document.getElementById('welcome').style.display = 'block';
             document.getElementById('resourceCard').style.display = 'none';
