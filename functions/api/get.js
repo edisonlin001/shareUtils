@@ -4,11 +4,11 @@ export async function onRequest({ request }) {
 
     // 你的资源库
     const data = {
-        res0: {
-            title: "PS2025全套工具包",
-            desc: "含安装包+插件+教程+滤镜，一键安装使用",
+        pr24: {
+            title: "PR24 mac版安装包",
+            desc: "只支持m芯片",
             quark: "https://pan.quark.cn/s/ba2abf643368?pwd=2bcy",
-            baidu: "https://pan.baidu.com/s/1SttWSd9Hb_CW4yGcnGA2iw?pwd=5k4t"
+            baidu: ""
         },
         res1: {
             title: "Python零基础教程",
